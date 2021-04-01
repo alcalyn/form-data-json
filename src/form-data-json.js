@@ -1,6 +1,9 @@
 'use strict'
 
 /**
+ * Modified version of https://raw.githubusercontent.com/brainfoolong/form-data-json/master/src/form-data-json.js
+ * to allow to filter form field before converting to json.
+ *
  * Form Data Json Converter
  * @link https://github.com/brainfoolong/form-data-json
  * @licence MIT
@@ -110,6 +113,7 @@ class FormDataJson {
     let files = []
     for (let i = 0; i < inputs.length; i++) {
       let input = inputs[i]
+      if (!options.includeCallback(input)) continue
       let inputType = (input.type || 'text').toLowerCase()
       if (!input.name || input.name.length === 0) continue
       if (!options.includeDisabled && input.disabled) continue
@@ -307,6 +311,11 @@ class FormDataJsonOptions {
      * @type {boolean}
      */
     includeButtonValues: false,
+    /**
+     * Custom callback to define whether to include the field in json data.
+     * @type {(input: Element) => boolean}
+     */
+    includeCallback: input => true,
     /**
      * Will unset all existing input fields in form when using fillFormFromJsonValues
      * This will be helpful if you have checkboxes and want to fill from json object, but checkboxes still stay checked
